@@ -1,4 +1,5 @@
 import { app } from "./app";
+import { getRecentCommits } from "./github";
 
 // "hello" を含むメッセージをリッスンします
 app.message("hello", async ({ message, say }) => {
@@ -29,6 +30,28 @@ app.action("button_click", async ({ body, ack, say }) => {
   // アクションのリクエストを確認
   await ack();
   await say(`<@${body.user.id}> clicked the button`);
+});
+
+app.message("commits", async ({ ack, say }) => {
+  // await ack();
+
+  try {
+    const commitsData = await getRecentCommits(
+      "kyonenya",
+      "bild-hineinschauen"
+    );
+    const commits = commitsData.slice(0, 5); // 直近の3件のコミットを取得
+
+    let commitMessages = "直近のコミット:\n";
+    for (const commit of commits) {
+      commitMessages += `- ${commit.commit.message} by ${commit.commit.author.name}\n`;
+    }
+
+    await say(commitMessages);
+  } catch (error) {
+    console.error(error);
+    await say("コミットの取得に失敗しました。");
+  }
 });
 
 (async () => {
