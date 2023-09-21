@@ -38,7 +38,7 @@ app.message("commits", async ({ ack, say }) => {
   try {
     const commitsData = await getRecentCommits(
       "kyonenya",
-      "bild-hineinschauen"
+      "slack-app-playground"
     );
     const commits = commitsData.slice(0, 5); // 直近の3件のコミットを取得
 
